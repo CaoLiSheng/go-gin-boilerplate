@@ -20,11 +20,11 @@ a boilerplate template repository for go-gin.
 ├─ web
 │  ├─ apis.go
 │  └─ xxx
-│      ├─ model
-│      │  └─ init.go
-│      ├─ view
-│      │  └─ init.go
-│      └─ controller
-│          └─ init.go
+│     ├─ model
+│     │  └─ init.go
+│     ├─ view
+│     │  └─ init.go
+│     └─ controller
+│        └─ init.go
 └─ tests
 ```

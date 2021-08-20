@@ -10,6 +10,15 @@ import (
 	"github.com/pingcap/errors"
 )
 
+func (ahf allowHeaderFlag) String() string {
+	return fmt.Sprintf("allow headers=%s", strings.Join(ahf, ";"))
+}
+
+func (ahf *allowHeaderFlag) Set(str string) error {
+	*ahf = strings.Split(str, ";")
+	return nil
+}
+
 func (aof allowOriginFlag) String() string {
 	return fmt.Sprintf("allow origins=%s", strings.Join(aof, ";"))
 }
@@ -50,6 +59,7 @@ func (pf *portFlag) Set(str string) error {
 }
 
 func (flags *Flags) Print() {
+	log.Println(flags.AllowHeaders)
 	log.Println(flags.AllowOrigins)
 	log.Println(flags.Dev)
 	log.Println("DSN=", flags.DSN)
@@ -61,13 +71,16 @@ func (flags *Flags) Print() {
 func InitFlags() *Flags {
 	flags := new(Flags)
 
+	flags.AllowHeaders = allowHeaderFlag{"csrftoken", "session", "authorization"}
+	flag.CommandLine.Var(&flags.AllowHeaders, "headers", "allowed headers")
+
 	flags.AllowOrigins = allowOriginFlag{"http://localhost:4200", "http://localhost:3000", "http://localhost:3333"}
 	flag.CommandLine.Var(&flags.AllowOrigins, "origins", "allowed origins")
 
 	flags.Dev = devFlag(true)
 	flag.CommandLine.Var(&flags.Dev, "dev", "dev/release mode")
 
-	flag.CommandLine.StringVar(&flags.DSN, "dsn", "root:123456@tcp(192.168.1.6:3306)/test?charset=utf8&collation=utf8_bin&parseTime=true&loc=Local", "data source name")
+	flag.CommandLine.StringVar(&flags.DSN, "dsn", "root:123456@tcp(192.168.1.6:3306)/test?charset=utf8mb4&collation=utf8mb4_bin&parseTime=true&loc=Local", "data source name")
 	flag.CommandLine.StringVar(&flags.SUN, "sun", "root", "super user name")
 	flag.CommandLine.StringVar(&flags.SUP, "sup", "111111", "super user password")
 
