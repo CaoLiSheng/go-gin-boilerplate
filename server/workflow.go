@@ -16,23 +16,23 @@ func (r *Result) Send(c *gin.Context) {
 	}
 }
 
-func Do(c *gin.Context, opts *db.JobOptions, job Job, simple, auto bool) (result *Result) {
-	opts.Job = func (core *db.Core) {
+func Do(c *gin.Context, opts *db.JobOptions, job Job) (result *Result) {
+	Job := func (core *db.Core) {
 		result = job(core)
 	}
-	opts.Fail = func (err error) {
+	Fail := func (err error) {
 		result = new(Result)
 		result.Code = http.StatusServiceUnavailable
 		result.Err = err
 	}
 
-	if simple {
-		MustGet(c).DoSimple(opts)
+	if opts.Simple {
+		MustGet(c).DoSimple(opts, Job, Fail)
 	} else {
-		MustGet(c).Do(opts)
+		MustGet(c).Do(opts, Job, Fail)
 	}
 
-	if auto {
+	if opts.Auto {
 		result.Send(c)
 	}
 

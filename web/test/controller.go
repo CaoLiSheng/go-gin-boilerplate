@@ -3,15 +3,17 @@ package test
 import (
 	"go-gin-boilerplate/db"
 	srv "go-gin-boilerplate/server"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
 // API :
 func API(c *gin.Context) {
-	srv.Do(c, db.NewJobOpts(), func(c *db.Core) *srv.Result {
-		return &srv.Result{ Code: http.StatusOK }
-	}, true, true)
+	req := new(req)
+	if srv.BadRequest(c, req) {
+		return
+	}
+
+	srv.Do(c, db.NewJobOpts(true, true), handler(req))
 }
 

@@ -68,28 +68,28 @@ func (flags *Flags) Print() {
 	log.Println(flags.Port)
 }
 
+var TheFlags = new(Flags)
+
 func InitFlags() *Flags {
-	flags := new(Flags)
+	TheFlags.AllowHeaders = allowHeaderFlag{"csrftoken", "session", "authorization"}
+	flag.CommandLine.Var(&TheFlags.AllowHeaders, "headers", "allowed headers")
 
-	flags.AllowHeaders = allowHeaderFlag{"csrftoken", "session", "authorization"}
-	flag.CommandLine.Var(&flags.AllowHeaders, "headers", "allowed headers")
+	TheFlags.AllowOrigins = allowOriginFlag{"http://localhost:4200", "http://localhost:3000", "http://localhost:3333"}
+	flag.CommandLine.Var(&TheFlags.AllowOrigins, "origins", "allowed origins")
 
-	flags.AllowOrigins = allowOriginFlag{"http://localhost:4200", "http://localhost:3000", "http://localhost:3333"}
-	flag.CommandLine.Var(&flags.AllowOrigins, "origins", "allowed origins")
+	TheFlags.Dev = devFlag(true)
+	flag.CommandLine.Var(&TheFlags.Dev, "dev", "dev/release mode")
 
-	flags.Dev = devFlag(true)
-	flag.CommandLine.Var(&flags.Dev, "dev", "dev/release mode")
+	flag.CommandLine.StringVar(&TheFlags.DSN, "dsn", "root:111111@tcp(127.0.0.1:3306)/test?charset=utf8mb4&collation=utf8mb4_bin&parseTime=true&loc=Local", "data source name")
+	flag.CommandLine.StringVar(&TheFlags.SUN, "sun", "root", "super user name")
+	flag.CommandLine.StringVar(&TheFlags.SUP, "sup", "111111", "super user password")
 
-	flag.CommandLine.StringVar(&flags.DSN, "dsn", "root:123456@tcp(192.168.1.6:3306)/test?charset=utf8mb4&collation=utf8mb4_bin&parseTime=true&loc=Local", "data source name")
-	flag.CommandLine.StringVar(&flags.SUN, "sun", "root", "super user name")
-	flag.CommandLine.StringVar(&flags.SUP, "sup", "111111", "super user password")
-
-	flags.Port = portFlag(9000)
-	flag.CommandLine.Var(&flags.Port, "port", "web server port")
+	TheFlags.Port = portFlag(9000)
+	flag.CommandLine.Var(&TheFlags.Port, "port", "web server port")
 
 	flag.Parse()
 	
-	flags.Print()
+	TheFlags.Print()
 	
-	return flags
+	return TheFlags
 }

@@ -21,6 +21,15 @@ type Fail func(error)
 type JobOptions struct {
 	Timeout time.Duration
 	TxOpts  *sql.TxOptions
-	Job     Job
-	Fail    Fail
+	Simple  bool
+	Auto    bool
+}
+
+type PageReq struct {
+	Target int64 `form:"target" binding:"required"`
+	Size   int64 `form:"size" binding:"required"`
+}
+
+type PageRes struct {
+	TotalRecords int64 `json:"total"`
 }
