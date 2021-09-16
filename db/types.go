@@ -31,5 +31,5 @@ type PageReq struct {
 }
 
 type PageRes struct {
-	TotalRecords int64 `json:"total"`
+	TotalRecords int64 `db:"total" json:"total"`
 }

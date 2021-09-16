@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	sqlbuilder "github.com/huandu/go-sqlbuilder"
 )
 
 func handler(req *req) srv.Job {
@@ -28,6 +29,12 @@ func handler(req *req) srv.Job {
 			data = append(data, res)
 		}
 
-		return &srv.Result{ Code: http.StatusOK, Results: gin.H{"tables": data, "request": req} }
+		sb := sqlbuilder.NewSelectBuilder().Select("count(*) as total").From("person")
+		sql, args := sb.Build()
+		row := c.DB.QueryRowxContext(*c.Ctx, sql, args...)
+		pageRes := new(db.PageRes)
+		row.StructScan(pageRes)
+
+		return &srv.Result{ Code: http.StatusOK, Results: gin.H{"tables": data, "total_persons": pageRes, "request": req} }
 	}
 }
