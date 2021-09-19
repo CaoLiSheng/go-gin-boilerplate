@@ -9,9 +9,9 @@ import (
 
 func Setup(e *gin.Engine) {
 	superAuth := srv.BearerAuth(srv.SuperUserType)
-	e.GET("/login/super", superAuth.LoginHandler)
-	e.GET("/logout/super", superAuth.LogoutHandler)
-	e.GET("/refresh/super", superAuth.RefreshHandler)
+	e.POST("/login/super", superAuth.LoginHandler)
+	e.POST("/refresh/super", superAuth.RefreshHandler)
+	// e.POST("/logout/super", superAuth.LogoutHandler)
 	super := e.Group("/super")
 	super.Use(superAuth.MiddlewareFunc())
 	{

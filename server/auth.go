@@ -48,7 +48,7 @@ func authenticator(tipe string) jwtAuthenticator {
 		err := c.ShouldBind(form)
 
 		if err != nil {
-			return nil, errors.New("登录参数错误")
+			return nil, errors.New("登录参数错误【" + err.Error() + "】")
 		}
 
 		if form.Type != tipe {
